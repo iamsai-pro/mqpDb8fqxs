@@ -1,0 +1,184 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Kapuluru Athish - Portfolio</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="vscode-container">
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <span class="icon">📁</span> Explorer
+      </div>
+      <div class="file-list">
+        <div class="file" data-file="about.md">about.md</div>
+        <div class="file" data-file="education.md">education.md</div>
+        <div class="file" data-file="skills.json">skills.json</div>
+        <div class="file" data-file="projects.js">projects.js</div>
+        <div class="file" data-file="certifications.txt">certifications.txt</div>
+        <div class="file" data-file="contact.md">contact.md</div>
+      </div>
+    </div>
+
+    <div class="main-panel">
+      <div class="tabs-bar">
+        <div class="tab active" data-file="about.md">about.md</div>
+      </div>
+      <div class="editor-area">
+        <div id="editor-content">
+          <pre><code class="language-markdown"># About Me
+
+Detail-oriented Computer Science and Engineering student with strong organizational skills and a passion for learning. Skilled in managing multiple projects accurately while staying curious and committed to solving real-world problems.
+
+**Contact:**
+Nellore, India | athishathish51@gmail.com | +91 7989084939 | github.com/ATHISH444 | linkedin.com/in/athish-k-363b39285
+          </code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const sidebar = document.querySelector('.sidebar');
+    const fileList = document.querySelector('.file-list');
+    const tabsBar = document.querySelector('.tabs-bar');
+    const editorContent = document.getElementById('editor-content');
+    let activeTab = null;
+
+    const filesData = {
+      "about.md": {
+        type: "markdown",
+        content: `# About Me\n\nDetail-oriented Computer Science and Engineering student with strong organizational skills and a passion for learning. Skilled in managing multiple projects accurately while staying curious and committed to solving real-world problems.\n\n**Contact:**\nNellore, India | athishathish51@gmail.com | +91 7989084939 | github.com/ATHISH444 | linkedin.com/in/athish-k-363b39285`
+      },
+      "education.md": {
+        type: "markdown",
+        content: `# Education\n\n**R.M.D Engineering College**\nBE Computer Science and Engineering\n• CGPA: 7.19 (2022 – 2026)\n\n**Narayana Junior College, Nellore**\n• Class 12th: 88.1% (2022)\n\n**Vowel Techlan School, Nellore District**\n• Class 10th: 96.67% (2020)`
+      },
+      "skills.json": {
+        type: "json",
+        content: JSON.stringify({
+          languages: ["Java", "Python (Basics)", "SQL", "HTML"],
+          tools: ["VS Code"],
+          strengths: ["Problem Solving", "Adaptability", "Team Collaboration"],
+          certifications: [
+            "Ethical Hacking Essentials – EC-Council",
+            "AI Foundations – Oracle",
+            "Python Foundation – Infosys Springboard",
+            "Java Foundation – Infosys Springboard"
+          ],
+          areaOfInterest: "Ethical Hacking",
+          languagesSpoken: ["English", "Telugu", "Hindi (Basics)"]
+        }, null, 2)
+      },
+      "projects.js": {
+        type: "javascript",
+        content: `// Projects\n// For a real IDE, project details would be fetched dynamically or stored in a more structured way.\n\nconsole.log("Projects:");\n\nconst projects = [\n  {\n    name: "PII Masking",\n    description: "Built a system for detecting and masking personally identifiable information (PII) in datasets to ensure data privacy and compliance."\n  },\n  {\n    name: "Steganography Encoder - Decoder",\n    description: "Developed a Python-based tool to hide messages within images using encryption techniques. Implemented encoding/decoding algorithms for secure data transmission."\n  },\n  {\n    name: "To-Do Application",\n    description: "Designed a productivity app to manage daily tasks with features like create, update, prioritize, and track. Enhanced task organization and time management."\n  }\n];\n\nprojects.forEach(project => {\n  console.log(\`- ${project.name}: ${project.description}\`);\n});\n\n// Internships\nconsole.log("\\nInternships:");\nconsole.log("- Core Java Developer Intern, LevelUp Cloud Solutions");\n`
+      },
+      "certifications.txt": {
+        type: "text",
+        content: "Ethical Hacking Essentials – EC-Council\nAI Foundations – Oracle\nPython Foundation – Infosys Springboard\nJava Foundation – Infosys Springboard"
+      },
+      "contact.md": {
+        type: "markdown",
+        content: `# Contact\n\n**Kapuluru Athish**\n\nNellore, India\n\nEmail: athishathish51@gmail.com\nPhone: +91 7989084939\nGitHub: github.com/ATHISH444\nLinkedIn: linkedin.com/in/athish-k-363b39285`
+      }
+    };
+
+    function renderFileContent(fileName) {
+      const file = filesData[fileName];
+      if (!file) return;
+
+      let contentHtml = '';
+      if (file.type === "markdown") {
+        const lines = file.content.split('\n');
+        contentHtml = lines.map(line => {
+          if (line.startsWith('#')) {
+            const level = line.match(/^#+/)[0].length;
+            return `<h${level}>${line.replace(/^#+\s*/, '')}</h${level}>`;
+          } else if (line.includes('•')) {
+            return `<ul><li>${line.replace(/^•\s*/, '')}</li></ul>`;
+          } else if (line.trim().startsWith('**')) {
+            return `<p><strong>${line.replace(/\*\*/g, '')}</strong></p>`;
+          } else if (line.includes(':')) {
+            const parts = line.split(':');
+            return `<p><strong>${parts[0]}:</strong> ${parts.slice(1).join(':').trim()}</p>`;
+          } else if (line.length > 0) {
+            return `<p>${line}</p>`;
+          }
+          return '';
+        }).join('');
+      } else if (file.type === "json") {
+        contentHtml = `<pre><code class="language-json">${escapeHtml(file.content)}</code></pre>`;
+      } else if (file.type === "javascript") {
+        contentHtml = `<pre><code class="language-javascript">${escapeHtml(file.content)}</code></pre>`;
+      } else if (file.type === "text") {
+        contentHtml = `<pre><code>${escapeHtml(file.content)}</code></pre>`;
+      }
+
+      editorContent.innerHTML = contentHtml;
+    }
+
+    function setActiveTab(tabElement) {
+      if (activeTab) {
+        activeTab.classList.remove('active');
+      }
+      activeTab = tabElement;
+      activeTab.classList.add('active');
+    }
+
+    function openFile(fileName) {
+      let tabElement = tabsBar.querySelector(`.tab[data-file="${fileName}"]`);
+
+      if (!tabElement) {
+        tabElement = document.createElement('div');
+        tabElement.classList.add('tab', 'active');
+        tabElement.setAttribute('data-file', fileName);
+        tabElement.textContent = fileName;
+        tabsBar.appendChild(tabElement);
+      }
+
+      setActiveTab(tabElement);
+      renderFileContent(fileName);
+    }
+
+    fileList.addEventListener('click', (e) => {
+      if (e.target.classList.contains('file')) {
+        const fileName = e.target.getAttribute('data-file');
+        openFile(fileName);
+      }
+    });
+
+    tabsBar.addEventListener('click', (e) => {
+      if (e.target.classList.contains('tab')) {
+        const fileName = e.target.getAttribute('data-file');
+        setActiveTab(e.target);
+        renderFileContent(fileName);
+      }
+    });
+
+    function escapeHtml(unsafe) {
+      return unsafe
+           .replace(/&/g, "&amp;")
+           .replace(/</g, "&lt;")
+           .replace(/>/g, "&gt;")
+           .replace(/"/g, "&quot;")
+           .replace(/'/g, "&#039;");
+    }
+
+    // Initialize with the first file
+    document.addEventListener('DOMContentLoaded', () => {
+      openFile('about.md');
+    });
+
+    // Basic sidebar toggle (optional, for completeness)
+    const sidebarHeader = document.querySelector('.sidebar-header');
+    sidebarHeader.addEventListener('click', () => {
+        sidebar.classList.toggle('collapsed');
+    });
+  </script>
+
+</body>
+</html>
